@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 50px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+	  
+			  body {
+		  background-color: #242a37;
+		  margin: 0;
+		  font-family: monospace;
+		  color: #fff;
+		  text-align: center;
+		}
+
+		.header {
+		  background-color: #2e3445;
+		  height: 80px;
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		}
+
+		.btn {
+		  cursos: pointer;
+		  background-color: #ed657d;
+		  color: #f2f2f2;
+		  text-align: center;
+		  margin: 5px;
+		  padding: 15px 35px;
+		  border: 1px solid transparent;
+		  border-radius: 4em;
+		  box-shadow: 5px 5px 4px rgba(0, 0, 0, .2);
+		  outline: 0;
+		  transition: .8s:
+		  will-change: transform;
+		  z-index: 9999;
+		}
+
+		.btn:active {
+		  transform: scale(.9);
+		}
+
+		.notification {
+		  width: 50px;
+		  height: inherit;
+		  color: #f2f2f2;
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  position: relative;
+		}
+
+		.notification::after {
+		  min-width: 20px;
+		  height: 20px;
+		  content: attr(data-count);
+		  background-color: #ed657d;
+		  font-family: monospace;
+		  font-weight: bolt;
+		  font-size: 14px;
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  border-radius: 50%;
+		  position: absolute;
+		  top: 5px;
+		  right: 5px;
+		  transition: .3s;
+		  opacity: 0;
+		  transform: scale(.5);
+		  will-change: opacity, transform;
+		}
+
+		.notification.show-count::after {
+		  opacity: 1;
+		  transform: scale(1);
+		}
+
+		.notification::before {
+		  content: "\f0f3";
+		  font-family: "FontAwesome";
+		  display: block;
+		}
+
+		.notification.notify::before {
+		  animation: bell 1s ease-out;
+		  transform-origin: center top;
+		}
+
+		@keyframes bell {
+		  0% {transform: rotate(35deg);}
+		  12.5% {transform: rotate(-30deg);}
+		  25% {transform: rotate(25deg);}
+		  37.5% {transform: rotate(-20deg);}
+		  50% {transform: rotate(15deg);}
+		  62.5% {transform: rotate(-10deg)}
+		  75% {transform: rotate(5deg)}
+		  100% {transform: rotate(0);}  
+		}
+    </style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+	$(function () {
+		var socket = io("http://192.168.100.29:3000");
+		
+		socket.on('message', function(msg){
+			$('#messages').append($('<li>').text('You have new notification: ' + msg));
+			document.getElementById('button').click();
+		});
+	});
+	
+	window.onload=function(){
+		const $button = document.getElementById('button');
+		const $bell = document.getElementById('notification');
+
+		$button.addEventListener("click", function(event){
+		  const count = Number($bell.getAttribute('data-count')) || 0;
+		  
+		  $bell.setAttribute('data-count', count + 1);
+		  $bell.classList.add('show-count');
+		  $bell.classList.add('notify');
+		});
+
+		$bell.addEventListener("animationend", function(event){
+		  $bell.classList.remove('notify');
+		});
+	}
+  </script>
+  <body>
+	<header class="header">
+		<button style="display: none;" id="button" class="btn">Send notification</button>
+		<div id="notification" class="notification"></div>
+	</header>
+    <ul id="messages" style="color: red;"></ul>
+    
+  </body>
+</html>
